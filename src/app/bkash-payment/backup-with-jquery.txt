@@ -1,0 +1,62 @@
+  private initBkashPayment() {
+    var paymentID = null;
+
+    bKash.init({
+      paymentMode: 'checkout', //fixed value ‘checkout’
+      paymentRequest: {
+        amount: this.dataForm.value.amount, //max two decimal points allowed
+        intent: 'sale',
+        currency: 'BDT',
+        merchantInvoiceNumber: '123456'
+      },
+
+      createRequest: function (request) {
+        console.log('createRequest', request)
+        $.ajax({
+          url: 'https://www.api.test.softlabit.com/api/bkash-payment/create-payment',
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify(request),
+          success: function (data) {
+            console.log('data', data.data)
+            if (data.data && data.data.paymentID != null) {
+              paymentID = data.data.paymentID;
+              bKash.create().onSuccess(
+                data.data
+              );
+            } else {
+              bKash.create().onError();
+            }
+          },
+          error: function (e) {
+            console.log(e)
+            bKash.create().onError();
+          }
+        });
+      },
+
+      executeRequestOnAuthorization: function () {
+        console.log('executeRequestOnAuthorization')
+        $.ajax({
+          url: 'https://www.api.test.softlabit.com/api/bkash-payment/execute-payment',
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({
+            "paymentID": paymentID
+          }),
+          success: function (data) {
+            console.log( 'executeRequestOnAuthorization Data', data.data)
+            if (data && data.data.paymentID != null) {
+              console.log('Payment Success')
+              //Merchant’s success
+            } else {
+              bKash.execute().onError();
+            }
+          },
+          error: function (e) {
+            bKash.execute().onError();
+          }
+        });
+      },
+    });
+  }

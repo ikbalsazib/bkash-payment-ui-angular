@@ -1,0 +1,26 @@
+
+<div class="header">
+  <h2> Default values for test</h2>
+  <p> Wallet : 01770618575</p>
+  <p> OTP : 123456</p>
+  <p> PIN : 12121</p>
+</div>
+
+<form #formElement="ngForm" [formGroup]="dataForm" (ngSubmit)="onSubmit()">
+  <mat-form-field appearance="outline" class="w-100 px-1">
+    <mat-label>Amount</mat-label>
+    <input formControlName="amount" matInput placeholder="Enter amount" required>
+    <mat-error>This field is required</mat-error>
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" type="submit">
+    Pay with bKash
+  </button>
+
+</form> <!-- END! FORM -->
+
+
+<!-- **** Bkash Payment Button Essential -->
+<button #bkashButton id="bKash_button" style="display: none">
+  Make Bkash Payment
+</button> <!-- END Bkash Hidden Button -->
